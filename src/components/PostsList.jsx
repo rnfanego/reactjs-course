@@ -1,36 +1,23 @@
 import Post from './Post'
-import NewPost from './NewPost';
-import Modal from './Modal'
 import classes from './PostsList.module.css'
-import {useState} from 'react';
+import { useLoaderData } from 'react-router-dom';
 
-function PostsList({isPosting,onStopPosting}) {
-    const [enteredBody, setEnteredBody] = useState('');
-    const [enteredAuthor, setEnteredAuthor] = useState('');
-
-    function bodyChangeHandler(event) {
-        setEnteredBody(event.target.value);
-    }
-
-    function authorChangeHandler(event) {
-        setEnteredAuthor(event.target.value);
-    }
-
-    let modalContent;
-
-    if (isPosting) {
-        modalContent = <Modal onClose={onStopPosting}>
-                            <NewPost onBodyChange={bodyChangeHandler} onAuthorChange={authorChangeHandler}/>
-                        </Modal>;
-    }
+function PostsList() {
+    const posts = useLoaderData();
 
     return (
         <>
-            {modalContent}
-            <ul className={classes.posts}>
-                <Post author={enteredAuthor} body={enteredBody}/>
-                <Post author="Ruben" body="Charan charan charan"/>
-            </ul>
+            {posts.length > 0 && (
+                <ul className={classes.posts}>
+                    {posts.map((post) => <Post key={post.id} id={post.id} author={post.author} body={post.body}/>)}
+                </ul>
+            )}
+            {posts.length === 0 && (
+                <div style={{textAlign: 'center',color: 'black'}}>
+                    <h2>No hay posts</h2>
+                    <p>Agregate alguno</p>
+                </div>
+            )}
         </> 
     );
 }
